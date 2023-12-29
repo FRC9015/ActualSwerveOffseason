@@ -29,17 +29,19 @@ public class DefaultDrive extends CommandBase {
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		double vx = driveController.getLeftX();
-		double vy = -driveController.getLeftY();
-		double w = -driveController.getRightX();
+		double vx = driveController.getLeftX(); // X - Direction Velocity
+		double vy = -driveController.getLeftY(); // Y - Direction Velocity
+		double w = -driveController.getRightX(); // Rotational Velocity 
 		double mag = Math.hypot(vx, vy);
 		double ma2 = MathUtil.applyDeadband(mag, 0.1);
+		double w2 = MathUtil.applyDeadband(w, 0.1);
 		double theta = Math.atan2(vy, vx);
 		vx = cos(theta) * ma2 * maxSpeed;
 		vy = sin(theta) * ma2 * maxSpeed;
+		w= w2 * maxSpeed;
 
 		ChassisSpeeds speeds =
-				ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, MathUtil.applyDeadband(w, 0.1), imu.yaw());
+				ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, w, imu.yaw());
 		swerve.drive(speeds);
 	}
 
