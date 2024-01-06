@@ -14,12 +14,12 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.SwerveModuleConfiguration;
 
 public class SwerveModule {
-	public CANSparkMax turn, drive;
-	public CANcoder encoder;
-	public Rotation2d encoder_offset;
+	private CANSparkMax turn, drive;
+	private CANcoder encoder;
+	private Rotation2d encoderOffset;
 
-	public RelativeEncoder driveEncoder;
-	public SwerveModuleState targState;
+	private RelativeEncoder driveEncoder;
+	private SwerveModuleState targetState;
 
 	private PIDController drivePID, turnPPID;
 	private String name;
@@ -34,7 +34,7 @@ public class SwerveModule {
 		turnPPID = new PIDController(2, 0, 0);
         
 		turnPPID.enableContinuousInput(-PI, PI);
-		encoder_offset = config.offset;
+		encoderOffset = config.offset;
 		drive.restoreFactoryDefaults();
 		turn.restoreFactoryDefaults();
 
@@ -58,26 +58,26 @@ public class SwerveModule {
 
 	public Rotation2d getDirection() {
 		return Rotation2d.fromRotations(encoder.getAbsolutePosition().getValue())
-				.minus(encoder_offset);
+				.minus(encoderOffset);
 	}
 
 	public void setState(SwerveModuleState state) {
-		this.targState = SwerveModuleState.optimize(state, getDirection());
+		this.targetState = SwerveModuleState.optimize(state, getDirection());
 	}
 
 	public void fixOffset() {
 		System.out.println("ERROR Offset for Cancoder: " + this.name + " is: "
-				+ getDirection().plus(encoder_offset).getRotations());
+				+ getDirection().plus(encoderOffset).getRotations());
 	}
 
 	public void periodic() {
-		if (targState == null) return;
+		if (targetState == null) return;
 		double curr_velocity =
 				Units.rotationsPerMinuteToRadiansPerSecond(driveEncoder.getVelocity()) / gearRatio * wheelRatio;
-		double target_vel = Math.abs(Math.cos((getDirection().getRadians() - targState.angle.getRadians())))
-				* targState.speedMetersPerSecond;
+		double target_vel = Math.abs(Math.cos((getDirection().getRadians() - targetState.angle.getRadians())))
+				* targetState.speedMetersPerSecond;
 
 		drive.setVoltage(drivePID.calculate(curr_velocity, target_vel) + target_vel * kV);
-		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targState.angle.getRadians()));
+		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targetState.angle.getRadians()));
 	}
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.Constants.*;
+import static frc.robot.RobotContainer.*;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -12,22 +13,32 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveModuleConfiguration;
 
 public class SwerveSubsystem extends SubsystemBase {
-	SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			new Translation2d(robotLength / 2, robotWidth / 2), // NW
 			new Translation2d(robotLength / 2, -robotWidth / 2), // NE
 			new Translation2d(-robotLength / 2, -robotWidth / 2), // SE
 			new Translation2d(-robotLength / 2, robotWidth / 2) // SW
 			);
 
-	public SwerveModule[] modules = new SwerveModule[] {
+	private SwerveModule[] modules = new SwerveModule[] {
 		new SwerveModule(SwerveModuleConfiguration.NW, "NW"),
 		new SwerveModule(SwerveModuleConfiguration.NE, "NE"),
 		new SwerveModule(SwerveModuleConfiguration.SE, "SE"),
 		new SwerveModule(SwerveModuleConfiguration.SW, "SW"),
 	};
 
-	public void drive(ChassisSpeeds speeds) {
-		SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+	/**
+	 * Moves the Swerve Modules with a certain x and y velocities and rotation.
+	 *
+	 * @param xVelocity X Velocity in Meters Per Second
+	 * @param yVelocity Y Velocity in Meters Per Second
+	 * @param rotationalVelocity Rotational Velocity in Radians Per Second
+	 */
+	public void drive(double xVelocity, double yVelocity, double rotationalVelocity) {
+		ChassisSpeeds chassisSpeeds =
+				ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, rotationalVelocity, imu.yaw());
+
+		SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
 		for (int i = 0; i < modules.length; i++) {
 			modules[i].setState(states[i]);
 		}

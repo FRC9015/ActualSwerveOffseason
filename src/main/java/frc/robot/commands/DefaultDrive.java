@@ -9,42 +9,32 @@ import static frc.robot.RobotContainer.*;
 import static java.lang.Math.*;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class DefaultDrive extends CommandBase {
 	@SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
-	/**
-	 * Creates a new ExampleCommand.
-	 *
-	 * @param subsystem The subsystem used by this command.
-	 */
-	public DefaultDrive() {
+    public DefaultDrive() {
 		addRequirements(swerve);
 	}
 
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		double vx = driveController.getLeftX(); // X - Direction Velocity
-		double vy = -driveController.getLeftY(); // Y - Direction Velocity
-		double w = -driveController.getRightX(); // Rotational Velocity 
-		double mag = Math.hypot(vx, vy); // Find fastest path between desired x and y velocities
-		double ma2 = MathUtil.applyDeadband(mag, 0.1); // Apply deadband for x and y velocities to avoid joystick jitter
-		w = MathUtil.applyDeadband(w, 0.1); // Apply rotational velocity deadband to avoid joystick jitter
-		
-		// Change range of values to a circle rather than square map to avoid conflict between motors
-		double theta = Math.atan2(vy, vx); 
-		vx = cos(theta) * ma2 * maxSpeed;
-		vy = sin(theta) * ma2 * maxSpeed; // The maxSpeed coefficient prevents overload on the motor and excessive motor speed
-		w = w * maxSpeed;
+		double xVelocity = driveController.getLeftX();
+		double yVelocity = -driveController.getLeftY();
+		double rotationalVelocity = -driveController.getRightX();
+		rotationalVelocity = MathUtil.applyDeadband(rotationalVelocity, 0.1);
+		double speed = Math.hypot(xVelocity, yVelocity);
+		double deadbandSpeed = MathUtil.applyDeadband(speed, 0.1);
+		double velocityDir = Math.atan2(yVelocity, xVelocity);
+		xVelocity = cos(velocityDir) * deadbandSpeed * maxSpeed;
+		yVelocity = sin(velocityDir) * deadbandSpeed * maxSpeed;
+		rotationalVelocity = rotationalVelocity * maxSpeed;
 
-		ChassisSpeeds speeds =
-				ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, w, imu.yaw()); // Finalize and set speeds
-		swerve.drive(speeds);
+
+		swerve.drive(xVelocity, yVelocity, rotationalVelocity);
 	}
 
 	// Returns true when the command should end.
