@@ -14,12 +14,12 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.SwerveModuleConfiguration;
 
 public class SwerveModule {
-	public CANSparkMax turn, drive;
-	public CANcoder encoder;
-	public Rotation2d encoder_offset;
+	private CANSparkMax turn, drive;
+	private CANcoder encoder;
+	private Rotation2d encoder_offset;
 
-	public RelativeEncoder driveEncoder;
-	public SwerveModuleState targState;
+	private RelativeEncoder driveEncoder;
+	private SwerveModuleState targState;
 
 	private PIDController drivePID, turnPPID;
 	private String name;

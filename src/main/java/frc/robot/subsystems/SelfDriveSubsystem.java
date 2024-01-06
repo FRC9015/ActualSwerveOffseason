@@ -5,7 +5,7 @@ import frc.robot.RobotSelf;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class SelfDriveSubsystem {
+public class SelfDriveSubsystem extends SubsystemBase{
     //private DriveSubsystem drive;
     private LimelightInterface limelight;
     private XboxController controller;
@@ -27,5 +27,6 @@ public class SelfDriveSubsystem {
             //puts selfdrive onto smartdashboard
             SmartDashboard.putBoolean("Self Drive", robotSelf.getselfdrive());
         }
+    
     }
 }

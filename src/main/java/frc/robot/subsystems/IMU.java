@@ -4,7 +4,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IMU {
-	public Pigeon2 imu;
+	private Pigeon2 imu;
 
 	public IMU() {
 		imu = new Pigeon2(23);

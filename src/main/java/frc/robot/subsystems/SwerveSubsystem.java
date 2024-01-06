@@ -12,14 +12,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveModuleConfiguration;
 
 public class SwerveSubsystem extends SubsystemBase {
-	SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			new Translation2d(robotLength / 2, robotWidth / 2), // NW
 			new Translation2d(robotLength / 2, -robotWidth / 2), // NE
 			new Translation2d(-robotLength / 2, -robotWidth / 2), // SE
 			new Translation2d(-robotLength / 2, robotWidth / 2) // SW
 			);
 
-	public SwerveModule[] modules = new SwerveModule[] {
+	private SwerveModule[] modules = new SwerveModule[] {
 		new SwerveModule(SwerveModuleConfiguration.NW, "NW"),
 		new SwerveModule(SwerveModuleConfiguration.NE, "NE"),
 		new SwerveModule(SwerveModuleConfiguration.SE, "SE"),
@@ -27,6 +27,8 @@ public class SwerveSubsystem extends SubsystemBase {
 	};
 
 	public void drive(ChassisSpeeds speeds) {
+		
+		
 		SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
 		for (int i = 0; i < modules.length; i++) {
 			modules[i].setState(states[i]);
