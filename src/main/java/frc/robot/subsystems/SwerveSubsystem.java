@@ -9,9 +9,13 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotSelf;
 import frc.robot.Constants.SwerveModuleConfiguration;
 
 public class SwerveSubsystem extends SubsystemBase {
+	
+	private RobotSelf robotSelf = new RobotSelf();
+
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			new Translation2d(robotLength / 2, robotWidth / 2), // NW
 			new Translation2d(robotLength / 2, -robotWidth / 2), // NE
@@ -37,8 +41,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		for (SwerveModule module : modules) {
-			module.periodic();
+		//if statment is so that the telop wont run if selfdrive is on.
+		if (!robotSelf.getselfdrive()){
+			for (SwerveModule module : modules) {
+				module.periodic();
+			}
 		}
 	}
 

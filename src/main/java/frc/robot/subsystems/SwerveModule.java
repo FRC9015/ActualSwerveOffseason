@@ -80,4 +80,14 @@ public class SwerveModule {
 		drive.setVoltage(drivePID.calculate(curr_velocity, target_vel) + target_vel * kV);
 		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targState.angle.getRadians()));
 	}
+	//for limelight movment(currently does not have drive code)
+	public void limelightcontrol(double x, double y, double area){
+		//stops the command if their is no tag
+		if(area < 0.1){
+			return;
+		}
+		
+
+
+	}
 }
