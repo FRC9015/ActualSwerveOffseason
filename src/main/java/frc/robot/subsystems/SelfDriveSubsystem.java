@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class SelfDriveSubsystem extends SubsystemBase{
-    
+
     //brings in other subsystems to be used
     private SwerveModule drive;
     private LimelightInterface limelight;
@@ -35,19 +35,24 @@ public class SelfDriveSubsystem extends SubsystemBase{
         double x = limelight.getX();
         double y = limelight.getY();
         double area = limelight.getArea();
+        //brings in the distance away the tag is from the bot
+        double distance = limelight.getDistance();
         
         //makes sure that selfdrive is true
         if(robotSelf.getselfdrive()){
-            //checks for a tag using the limelightinterface commands
-            if(limelight.TagCheck()){
-                //updates values
-                x = limelight.getX();
-                y = limelight.getY();
-                area = limelight.getArea();
-                // uses drive system to drive
-                drive.limelightcontrol(x, y, area);
-                
+            
+                //checks for a tag using the limelightinterface commands
+                if(limelight.TagCheck()){
+                    //updates values
+                    x = limelight.getX();
+                    y = limelight.getY();
+                    area = limelight.getArea();
+                    distance = limelight.getDistance();
+                    // uses drive system to drive based on tag
+                    drive.limelightcontrol(x, y, area,distance);
+                    
+                }
             }
         }
     }
-}
+

@@ -22,7 +22,7 @@ public final class Constants {
 	}
 
 	public static class SwerveConstants {
-		public static final double maxSpeed = 0.5;
+		public static final double maxSpeed = 2.5;
 	}
 
 	public static final double robotWidth = Units.inchesToMeters(21.73); // TODO: This must be tuned to specific robot

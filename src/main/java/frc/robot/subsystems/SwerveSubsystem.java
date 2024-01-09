@@ -44,7 +44,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		//if statment is so that the telop wont run if selfdrive is on.
 		if (!robotSelf.getselfdrive()){
 			for (SwerveModule module : modules) {
-				module.periodic();
+				module.telop();
 			}
 		}
 	}

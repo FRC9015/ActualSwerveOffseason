@@ -25,6 +25,7 @@ public class SwerveModule {
 	private String name;
 	private double kV = 3;
 
+	
 	public SwerveModule(SwerveModuleConfiguration config, String nameString) {
 		turn = new CANSparkMax(config.TURN_MOTOR, MotorType.kBrushless);
 		drive = new CANSparkMax(config.DRIVE_MOTOR, MotorType.kBrushless);
@@ -69,8 +70,8 @@ public class SwerveModule {
 		System.out.println("ERROR Offset for Cancoder: " + this.name + " is: "
 				+ getDirection().plus(encoder_offset).getRotations());
 	}
-
-	public void periodic() {
+	//drive command for telop
+	public void telop() {
 		if (targState == null) return;
 		double curr_velocity =
 				Units.rotationsPerMinuteToRadiansPerSecond(driveEncoder.getVelocity()) / gearRatio * wheelRatio;
@@ -80,14 +81,50 @@ public class SwerveModule {
 		drive.setVoltage(drivePID.calculate(curr_velocity, target_vel) + target_vel * kV);
 		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targState.angle.getRadians()));
 	}
+	//command to make the bot spin 360 degrees
+	public void spin360(){
+		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), Math.PI *2));
+	}
+	
 	//for limelight movment(currently does not have drive code)
-	public void limelightcontrol(double x, double y, double area){
+	public void limelightcontrol(double x, double y, double area, double TagDistance){
 		//stops the command if their is no tag
 		if(area < 0.1){
 			return;
 		}
 		
+		// when it wants the bot to stop(1 foot)
+		double desiredDistance = 12.0; //in inches
 
+		// Calculate the error in distance(PIDs)
+		double distanceError = TagDistance - desiredDistance;
 
+		// Define PID constants for distance control
+		//needs to be tested with bot to adjust numbers
+		double kP_distance = 0.1;//adjust later
+		double kI_distance = 0.01;//adjust later
+		double kD_distance = 0.1;//adjust later
+
+	
+		// Use PID control to adjust drive speed based on distance error
+		double driveSpeed = kP_distance * distanceError;
+							
+
+		// Set a maximum drive speed to avoid excessive adjustments
+		double maxDriveSpeed = 0.5; // Adjust as needed
+
+		// Limit drive speed to the maximum
+		driveSpeed = Math.min(Math.abs(driveSpeed), maxDriveSpeed) * Math.signum(driveSpeed);
+
+		// Use Limelight Y value to adjust turn angle
+		double turnAngleAdjustment = 0.1 * y; // Adjust as needed
+
+		// Apply adjustments to drive and turn commands
+		drive.setVoltage(driveSpeed);
+		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targState.angle.getRadians()) + turnAngleAdjustment);
+
+		
+    	// Update previous error for the next iteration
+    	
 	}
 }
