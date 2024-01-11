@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Swerve;
 
 import static frc.robot.Constants.Constants.*;
 
@@ -42,7 +42,7 @@ public class SwerveSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		//if statment is so that the telop wont run if selfdrive is on.
-		if (!robotSelf.getselfdrive()){
+		if (!robotSelf.getAmpSelf() && !robotSelf.getSpeakerSelf()){
 			for (SwerveModule module : modules) {
 				module.telop();
 			}

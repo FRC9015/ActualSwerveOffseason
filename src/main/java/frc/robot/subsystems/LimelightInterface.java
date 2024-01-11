@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import static java.lang.Math.*;
     
 public class LimelightInterface extends SubsystemBase{
     
@@ -41,7 +42,7 @@ public class LimelightInterface extends SubsystemBase{
     //the degrees of the camera to the tag
     double limelightToGoalDegrees = limelightMountAngleDegrees + y;
     //makes the degrees into radians
-    double goalDegreesToRadians = limelightToGoalDegrees * (3.14159 / 180.0);
+    double goalDegreesToRadians = limelightToGoalDegrees * (PI / 180.0);
          
     //calculate distance
     double TagDistance = (goalHeightInches - limelightLensHeightInches) / Math.tan(goalDegreesToRadians);

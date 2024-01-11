@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Swerve;
 
 import static frc.robot.Constants.Constants.*;
 import static java.lang.Math.*;
@@ -87,17 +87,17 @@ public class SwerveModule {
 	}
 	
 	//for limelight movment(currently does not have drive code)
-	public void limelightcontrol(double x, double y, double area, double TagDistance){
+	public void followTag(double x, double y, double area, double TagDistance){
 		//stops the command if their is no tag
 		if(area < 0.1){
 			return;
 		}
 		
 		// when it wants the bot to stop(1 foot)
-		double desiredDistance = 12.0; //in inches
+		double StopDistance = 12.0; //in inches
 
 		// Calculate the error in distance(PIDs)
-		double distanceError = TagDistance - desiredDistance;
+		double distanceError = TagDistance - StopDistance;
 
 		// Define PID constants for distance control
 		//needs to be tested with bot to adjust numbers
@@ -105,12 +105,10 @@ public class SwerveModule {
 		double kI_distance = 0.01;//adjust later
 		double kD_distance = 0.1;//adjust later
 
-	
 		// Use PID control to adjust drive speed based on distance error
 		double driveSpeed = kP_distance * distanceError;
 							
-
-		// Set a maximum drive speed to avoid excessive adjustments
+		// Set a maximum drive speed to avoid bot going to fast
 		double maxDriveSpeed = 0.5; // Adjust as needed
 
 		// Limit drive speed to the maximum
@@ -122,9 +120,5 @@ public class SwerveModule {
 		// Apply adjustments to drive and turn commands
 		drive.setVoltage(driveSpeed);
 		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targState.angle.getRadians()) + turnAngleAdjustment);
-
-		
-    	// Update previous error for the next iteration
-    	
 	}
 }
