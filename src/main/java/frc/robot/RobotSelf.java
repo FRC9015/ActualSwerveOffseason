@@ -10,14 +10,15 @@ public class RobotSelf {
     }
     public void toggleAmpSelf(){
         AmpSelf = !AmpSelf;
+        System.out.println(getAmpSelf());
     }
 
-    public boolean getSpeakerSelf(){
-        return SpeakerSelf;
-    }
-    public void toggleSpeakerSelf(){
-        SpeakerSelf = !SpeakerSelf;
-    }
+    // public boolean getSpeakerSelf(){
+    //     return SpeakerSelf;
+    // }
+    // public void toggleSpeakerSelf(){
+    //     SpeakerSelf = !SpeakerSelf;
+    // }
 
      
 

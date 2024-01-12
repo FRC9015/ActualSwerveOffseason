@@ -26,15 +26,16 @@ public class LimelightInterface extends SubsystemBase{
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area); 
+        SmartDashboard.putNumber("TagDistance",TagDistance);
     }
 
     //Used to calculate the distance from a tag
 
     // how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = 25.0;//needs to be changed based on limelight placement
+    double limelightMountAngleDegrees = 31.0;//needs to be changed based on limelight placement
 
     // distance from the center of the Limelight lens to the floor
-    double limelightLensHeightInches = 20.0;//needs to be changed based on limelight placement
+    double limelightLensHeightInches = 6.5;//needs to be changed based on limelight placement
  
     // distance from the target to the floor
     double goalHeightInches = 18;//this is set to the height of an amp
@@ -59,7 +60,7 @@ public class LimelightInterface extends SubsystemBase{
         TagDistance = (goalHeightInches - limelightLensHeightInches) / Math.tan(goalDegreesToRadians);
         //updates smartdashboard with values
         updateDashboard(x, y, area);
-        SmartDashboard.putNumber("TagDistance",TagDistance);
+        
     }
 
 

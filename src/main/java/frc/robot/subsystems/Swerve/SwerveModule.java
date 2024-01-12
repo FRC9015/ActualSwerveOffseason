@@ -26,16 +26,16 @@ public class SwerveModule {
 	private double kV = 3;
 
 	
-	public SwerveModule(SwerveModuleConfiguration config, String nameString) {
-		turn = new CANSparkMax(config.TURN_MOTOR, MotorType.kBrushless);
-		drive = new CANSparkMax(config.DRIVE_MOTOR, MotorType.kBrushless);
+	public SwerveModule(SwerveModuleConfiguration configs, String nameString) {
+		turn = new CANSparkMax(configs.TURN_MOTOR, MotorType.kBrushless);
+		drive = new CANSparkMax(configs.DRIVE_MOTOR, MotorType.kBrushless);
 		name = nameString;
-		encoder = new CANcoder(config.ENCODER);
+		encoder = new CANcoder(configs.ENCODER);
 		drivePID = new PIDController(3, 0, 0);
 		turnPPID = new PIDController(2, 0, 0);
         
 		turnPPID.enableContinuousInput(-PI, PI);
-		encoder_offset = config.offset;
+		encoder_offset = configs.offset;
 		drive.restoreFactoryDefaults();
 		turn.restoreFactoryDefaults();
 
@@ -112,7 +112,7 @@ public class SwerveModule {
 		double maxDriveSpeed = 0.5; // Adjust as needed
 
 		// Limit drive speed to the maximum
-		driveSpeed = Math.min(Math.abs(driveSpeed), maxDriveSpeed) * Math.signum(driveSpeed);
+		// driveSpeed = Math.min(Math.abs(driveSpeed), maxDriveSpeed) * Math.signum(driveSpeed);
 
 		// Use Limelight Y value to adjust turn angle
 		double turnAngleAdjustment = 0.1 * y; // Adjust as needed

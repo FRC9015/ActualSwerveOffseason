@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SpeakerSelfDrive extends SubsystemBase{
 
     //brings in other subsystems to be used
-    private SwerveModule drive;
+    private SwerveSubsystem drive;
     private LimelightInterface limelight;
     private CommandXboxController controller;
     private RobotSelf robotSelf;
     
     //makes the subsystems exist and usable
-    public SpeakerSelfDrive(CommandXboxController drivecontroller, RobotSelf robotSelf, LimelightInterface limelightInterface, SwerveModule swerve) {
-        this.controller = drivecontroller;
+    public SpeakerSelfDrive(CommandXboxController controller, RobotSelf robotSelf, LimelightInterface limelightInterface, SwerveSubsystem swerve) {
+        this.controller = controller;
         this.robotSelf = robotSelf;
         this.limelight = limelightInterface;
         this.drive = swerve;
@@ -29,12 +29,12 @@ public class SpeakerSelfDrive extends SubsystemBase{
     }
     @Override
     public void periodic(){
-        if(controller.getHID().getYButtonPressed() && !robotSelf.getAmpSelf()){//need to find out what the y button is in the command controller
-            //toggles the speaker boolean for doing speaker self drive
-            robotSelf.toggleSpeakerSelf();
-            //puts speakerSelf onto smartdashboard
-            SmartDashboard.putBoolean("SpeakerSelf",robotSelf.getSpeakerSelf());
-        }
+        // if(controller.getHID().getYButtonPressed() && !robotSelf.getAmpSelf()){//need to find out what the y button is in the command controller
+        //     //toggles the speaker boolean for doing speaker self drive
+        //     robotSelf.toggleSpeakerSelf();
+        //     //puts speakerSelf onto smartdashboard
+        //     SmartDashboard.putBoolean("SpeakerSelf",robotSelf.getSpeakerSelf());
+        // }
 
         //makes variables for the X Y Area and Distance of the limelight in SpeakerSelfDrive
         double x = limelight.getX();

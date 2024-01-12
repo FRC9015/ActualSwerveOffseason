@@ -10,7 +10,7 @@ public class IMU {
 		imu = new Pigeon2(23);
 	}
 
-	public double yaw() {
+	public Rotation2d yaw() {
 		return Rotation2d.fromDegrees(imu.getYaw().getValue());
 	}
 

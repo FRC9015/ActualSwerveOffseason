@@ -5,7 +5,7 @@ import static frc.robot.Constants.Constants.*;
 import java.util.Optional;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Rotation2d;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -16,13 +16,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotSelf;
 import frc.robot.Constants.SwerveModuleConfiguration;
 import frc.robot.subsystems.IMU;
+import frc.robot.subsystems.SelfDriving.AmpSelfDrive;
 
 
 
 public class SwerveSubsystem extends SubsystemBase {
 	
-	private RobotSelf robotSelf = new RobotSelf();
+	private RobotSelf robotSelf;
 	private IMU imu = new IMU();
+	private SwerveModule drive;
+
 
 	public SwerveDrivePoseEstimator pose_est;
 	
@@ -49,21 +52,17 @@ public class SwerveSubsystem extends SubsystemBase {
 		}
 	}
 
+
 	@Override
 	public void periodic() {
 		//if statment is so that the telop wont run if selfdrive is on.
-		if (!robotSelf.getAmpSelf() && !robotSelf.getSpeakerSelf()){
+		if(!robotSelf.getAmpSelf()){
+			
 			for (SwerveModule module : modules) {
 				module.telop();
 			}
 		}
-		//odametry
-		pose_est.update(new Rotation2d(imu.yaw()), getPositions());
-		Optional<EstimatedRobotPose> vis_pos = photon.getEstimatedGlobalPose(pose_est.getEstimatedPosition());
-		if (vis_pos.isPresent()) {
-			EstimatedRobotPose new_pose = vis_pos.get();
-			pose_est.addVisionMeasurement(new_pose.estimatedPose.toPose2d(), new_pose.timestampSeconds);
-		}
+		
 		}
 	
 	
@@ -73,5 +72,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public Command printOffsets() {
 		return new InstantCommand(this::getOffsets, this);
+	}
+	
+	public void runFollowTag(double x, double y, double Area, double Distance){
+		drive.followTag(x, y, Area, Distance);
 	}
 }

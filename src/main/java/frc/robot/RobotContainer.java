@@ -27,9 +27,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+	
+	
 	// The robot's subsystems and commands are defined here...
 	public static final SwerveSubsystem swerve = new SwerveSubsystem();
-	public static final SwerveModule swerveModule = new SwerveModule(null, null);
+	
 	private RobotSelf robotSelf = new RobotSelf();
 	
 
@@ -41,15 +43,15 @@ public class RobotContainer {
 			new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
 			private final LimelightInterface limelightInterface = new LimelightInterface();
-			private final AmpSelfDrive AmpSelfDrive = new AmpSelfDrive(driveController, robotSelf, limelightInterface, swerveModule);
-			private final SpeakerSelfDrive SpeakerSelfDrive = new SpeakerSelfDrive(driveController, robotSelf, limelightInterface, swerveModule);
+			private final AmpSelfDrive AmpSelfDrive = new AmpSelfDrive(driveController, robotSelf, limelightInterface, swerve);
+			private final SpeakerSelfDrive SpeakerSelfDrive = new SpeakerSelfDrive(driveController, robotSelf, limelightInterface, swerve);
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
 		// Configure the trigger bindings
 		configureBindings();
-		CommandScheduler.getInstance().registerSubsystem(limelightInterface);
-		CommandScheduler.getInstance().registerSubsystem(AmpSelfDrive);
-		CommandScheduler.getInstance().registerSubsystem(SpeakerSelfDrive);
+		// CommandScheduler.getInstance().registerSubsystem(limelightInterface);
+		// CommandScheduler.getInstance().registerSubsystem(AmpSelfDrive);
+		// CommandScheduler.getInstance().registerSubsystem(SpeakerSelfDrive);
 	}
 
 	/**
