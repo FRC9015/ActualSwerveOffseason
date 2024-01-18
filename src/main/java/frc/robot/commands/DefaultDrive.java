@@ -34,11 +34,11 @@ public class DefaultDrive extends CommandBase {
 		double w = -driveController.getRightX(); // Rotational Velocity 
 		double mag = Math.hypot(xVelocity, yVelocity);
 		double ma2 = MathUtil.applyDeadband(mag, 0.1);
-		double w2 = MathUtil.applyDeadband(w, 0.1);
+		w = MathUtil.applyDeadband(w, 0.1);
 		double theta = Math.atan2(yVelocity, xVelocity);
 		xVelocity = cos(theta) * ma2 * maxSpeed;
 		yVelocity = sin(theta) * ma2 * maxSpeed;
-		w= w2 * maxSpeed;
+		w = w * maxSpeed;
 
 		ChassisSpeeds speeds =
 				ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, w, imu.yaw());
