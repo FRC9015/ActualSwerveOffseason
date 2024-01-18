@@ -2,25 +2,27 @@ package frc.robot;
 
 //used so that selfdrive can be used in any file
 public class RobotSelf {
-    private boolean AmpSelf = false;
-    private boolean SpeakerSelf = false;
+    
+    public static class RobotSelves{
+        private static boolean AmpSelf = false;
+        private static boolean SpeakerSelf = false;
 
-    public boolean getAmpSelf(){
-        return AmpSelf;
-    }
-    public void toggleAmpSelf(){
-        AmpSelf = !AmpSelf;
-        System.out.println(getAmpSelf());
-    }
+        public static boolean getAmpSelf(){
+            return AmpSelf;
+        }
+        public static void toggleAmpSelf(){
+            AmpSelf = !AmpSelf;
+            System.out.println(getAmpSelf());
+        }
 
-    // public boolean getSpeakerSelf(){
-    //     return SpeakerSelf;
-    // }
-    // public void toggleSpeakerSelf(){
-    //     SpeakerSelf = !SpeakerSelf;
-    // }
+        public static boolean getSpeakerSelf(){
+            return SpeakerSelf;
+        }
+        public static void toggleSpeakerSelf(){
+            SpeakerSelf = !SpeakerSelf;
+        }
 
      
-
+    }
 }
 

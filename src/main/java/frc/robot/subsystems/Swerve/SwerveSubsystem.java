@@ -13,18 +13,18 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotSelf;
+
 import frc.robot.Constants.SwerveModuleConfiguration;
-import frc.robot.subsystems.IMU;
-import frc.robot.subsystems.SelfDriving.AmpSelfDrive;
+import frc.robot.RobotSelf.RobotSelves;
+
+
 
 
 
 public class SwerveSubsystem extends SubsystemBase {
 	
-	private RobotSelf robotSelf;
-	private IMU imu = new IMU();
-	private SwerveModule drive;
+	
+	
 
 
 	public SwerveDrivePoseEstimator pose_est;
@@ -56,14 +56,12 @@ public class SwerveSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		//if statment is so that the telop wont run if selfdrive is on.
-		if(!robotSelf.getAmpSelf()){
-			
+		if(!RobotSelves.getAmpSelf() && !RobotSelves.getSpeakerSelf()){
 			for (SwerveModule module : modules) {
-				module.telop();
+				module.teleop();
 			}
-		}
-		
-		}
+		}	
+	}
 	
 	
 	public void getOffsets() {
@@ -74,7 +72,14 @@ public class SwerveSubsystem extends SubsystemBase {
 		return new InstantCommand(this::getOffsets, this);
 	}
 	
-	public void runFollowTag(double x, double y, double Area, double Distance){
-		drive.followTag(x, y, Area, Distance);
+	public void runFollowTag(double x, double y, double area, double distance){
+		for (SwerveModule module : modules){
+			module.followTag(x,y,area,distance);
+		}
+	}
+	public void runSpin(){
+		for (SwerveModule module : modules){
+			module.spin360();
+		}
 	}
 }

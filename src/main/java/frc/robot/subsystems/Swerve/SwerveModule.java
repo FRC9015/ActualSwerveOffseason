@@ -7,10 +7,14 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import frc.robot.Constants.SwerveModuleConfiguration;
 
 public class SwerveModule {
@@ -70,8 +74,8 @@ public class SwerveModule {
 		System.out.println("ERROR Offset for Cancoder: " + this.name + " is: "
 				+ getDirection().plus(encoder_offset).getRotations());
 	}
-	//drive command for telop
-	public void telop() {
+	//drive command for teleop
+	public void teleop() {
 		if (targState == null) return;
 		double curr_velocity =
 				Units.rotationsPerMinuteToRadiansPerSecond(driveEncoder.getVelocity()) / gearRatio * wheelRatio;
@@ -94,7 +98,7 @@ public class SwerveModule {
 		}
 		
 		// when it wants the bot to stop(1 foot)
-		double StopDistance = 12.0; //in inches
+		double StopDistance = 12; //in inches
 
 		// Calculate the error in distance(PIDs)
 		double distanceError = TagDistance - StopDistance;
@@ -112,13 +116,17 @@ public class SwerveModule {
 		double maxDriveSpeed = 0.5; // Adjust as needed
 
 		// Limit drive speed to the maximum
-		// driveSpeed = Math.min(Math.abs(driveSpeed), maxDriveSpeed) * Math.signum(driveSpeed);
+		driveSpeed = Math.min(Math.abs(driveSpeed), maxDriveSpeed) * Math.signum(driveSpeed);
 
 		// Use Limelight Y value to adjust turn angle
 		double turnAngleAdjustment = 0.1 * y; // Adjust as needed
 
 		// Apply adjustments to drive and turn commands
-		drive.setVoltage(driveSpeed);
+		
+		
+		
 		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targState.angle.getRadians()) + turnAngleAdjustment);
+		drive.setVoltage(driveSpeed);
 	}
+
 }
