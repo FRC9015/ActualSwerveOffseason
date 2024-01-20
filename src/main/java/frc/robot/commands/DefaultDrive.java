@@ -41,7 +41,7 @@ public class DefaultDrive extends CommandBase {
 		w = w * maxSpeed;
 
 		ChassisSpeeds speeds =
-				ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, w, imu.yaw());
+				ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, w, swerve.pose_est.getEstimatedPosition().getRotation());
 		swerve.drive(speeds);
 	}
 

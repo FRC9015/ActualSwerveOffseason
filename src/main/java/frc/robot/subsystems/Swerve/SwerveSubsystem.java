@@ -4,19 +4,28 @@ import static frc.robot.Constants.Constants.*;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.LimelightHelpers;
 import frc.robot.Constants.SwerveModuleConfiguration;
 import frc.robot.RobotSelf.RobotSelves;
-
+import frc.robot.subsystems.IMU;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 
 
@@ -24,10 +33,14 @@ import frc.robot.RobotSelf.RobotSelves;
 public class SwerveSubsystem extends SubsystemBase {
 	
 	
+	private GenericEntry currentPos = Shuffleboard.getTab("swerve").add("curr_pos",new double[3]).getEntry();
 	
-
+	
+	private IMU imu = new IMU();
 
 	public SwerveDrivePoseEstimator pose_est;
+
+	Field2d field = new Field2d();
 	
 	private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			new Translation2d(robotLength / 2, robotWidth / 2), // NW
@@ -43,6 +56,11 @@ public class SwerveSubsystem extends SubsystemBase {
 		new SwerveModule(SwerveModuleConfiguration.SW, "SW"),
 	};
 
+	public SwerveModulePosition[] getPositions() {
+        SwerveModulePosition[] pos = new SwerveModulePosition[4];
+        for (int i = 0; i < 4; i++) pos[i] = modules[i].getPosition();
+        return pos;
+    }
 	public void drive(ChassisSpeeds speeds) {
 		
 		
@@ -60,7 +78,31 @@ public class SwerveSubsystem extends SubsystemBase {
 			for (SwerveModule module : modules) {
 				module.teleop();
 			}
-		}	
+		}
+			pose_est.update(imu.yaw(),getPositions());
+			LimelightHelpers.Results result = LimelightHelpers.getLatestResults("limelight").targetingResults;
+			
+			if(LimelightHelpers.getTV("limelight")){
+
+				//System.out.println(result.getBotPose2d());
+				double tl = result.latency_pipeline;
+				double cl = result.latency_capture;
+				
+				double timeStamp = Timer.getFPGATimestamp() - (tl/1000.0) - (cl/1000.0);
+
+
+				pose_est.addVisionMeasurement(result.getBotPose2d(), timeStamp);
+
+			}
+			field.setRobotPose(pose_est.getEstimatedPosition());
+			
+			double[] curr_pos = {
+                pose_est.getEstimatedPosition().getX(),
+                pose_est.getEstimatedPosition().getY(),
+                pose_est.getEstimatedPosition().getRotation().getRadians()
+        };
+		currentPos.setDoubleArray(curr_pos);
+		
 	}
 	
 	
@@ -71,10 +113,17 @@ public class SwerveSubsystem extends SubsystemBase {
 	public Command printOffsets() {
 		return new InstantCommand(this::getOffsets, this);
 	}
+	public void erorr(double x, double y){
+		drive(new ChassisSpeeds(1-x,1-y,x-y));
+
+	}
 	
+	//DONT PUT IN MASTER
 	public void runFollowTag(double x, double y, double area, double distance){
 		for (SwerveModule module : modules){
-			module.followTag(x,y,area,distance);
+			module.drivePID(distance,29);
+			module.turnPID(y);
+			
 		}
 	}
 	public void runSpin(){
@@ -82,4 +131,22 @@ public class SwerveSubsystem extends SubsystemBase {
 			module.spin360();
 		}
 	}
+	//PUT IN MASTER
+
+	public void initShuffleboard(){
+		Shuffleboard.getTab("swerve").add(field);
+	}
+	
+	public void init(Pose2d init_pose){
+		pose_est = new SwerveDrivePoseEstimator(
+			kinematics,
+			imu.yaw(),
+			getPositions(),
+			init_pose,
+			VecBuilder.fill(0.1, 0.1, 0.1),
+			VecBuilder.fill(0.1, 0.1, 0.1));
+		
+	}
+	
 }
+	

@@ -11,6 +11,7 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -66,6 +67,14 @@ public class SwerveModule {
 				.minus(encoder_offset);
 	}
 
+	public SwerveModulePosition getPosition(){
+		return new SwerveModulePosition(getDriveDistance(), getDirection());
+
+	}
+	public double getDriveDistance(){
+		return driveEncoder.getPosition() / gearRatio*2*Math.PI*Units.inchesToMeters(2);
+	}
+
 	public void setState(SwerveModuleState state) {
 		this.targState = SwerveModuleState.optimize(state, getDirection());
 	}
@@ -85,48 +94,21 @@ public class SwerveModule {
 		drive.setVoltage(drivePID.calculate(curr_velocity, target_vel) + target_vel * kV);
 		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targState.angle.getRadians()));
 	}
+	//DONT PUT IN MASTER
 	//command to make the bot spin 360 degrees
+	
 	public void spin360(){
 		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), Math.PI *2));
 	}
 	
-	//for limelight movment(currently does not have drive code)
-	public void followTag(double x, double y, double area, double TagDistance){
-		//stops the command if their is no tag
-		if(area < 0.1){
-			return;
-		}
-		
-		// when it wants the bot to stop(1 foot)
-		double StopDistance = 12; //in inches
+	public void drivePID(double curr,double tar){
+		drive.setVoltage(drivePID.calculate(curr, tar));
 
-		// Calculate the error in distance(PIDs)
-		double distanceError = TagDistance - StopDistance;
-
-		// Define PID constants for distance control
-		//needs to be tested with bot to adjust numbers
-		double kP_distance = 0.1;//adjust later
-		double kI_distance = 0.01;//adjust later
-		double kD_distance = 0.1;//adjust later
-
-		// Use PID control to adjust drive speed based on distance error
-		double driveSpeed = kP_distance * distanceError;
-							
-		// Set a maximum drive speed to avoid bot going to fast
-		double maxDriveSpeed = 0.5; // Adjust as needed
-
-		// Limit drive speed to the maximum
-		driveSpeed = Math.min(Math.abs(driveSpeed), maxDriveSpeed) * Math.signum(driveSpeed);
-
-		// Use Limelight Y value to adjust turn angle
-		double turnAngleAdjustment = 0.1 * y; // Adjust as needed
-
-		// Apply adjustments to drive and turn commands
-		
-		
-		
-		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targState.angle.getRadians()) + turnAngleAdjustment);
-		drive.setVoltage(driveSpeed);
 	}
+	public void turnPID(double turns){
+		turn.setVoltage(turnPPID.calculate(getDirection().getRadians(), targState.angle.getRadians())+ turns);
+	}
+	
+	
 
 }

@@ -11,6 +11,9 @@ import java.lang.Math.*;
 public class LimelightInterface extends SubsystemBase{
     
     private static NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight");
+    
+    
+    
     private static boolean tag = false;
     //takes the X,Y, and area values from the limelight networktable
     NetworkTableEntry tx = limelight.getEntry("tx");//Tag X value

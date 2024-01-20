@@ -16,6 +16,7 @@ import frc.robot.subsystems.SelfDriving.AmpSelfDrive;
 import frc.robot.subsystems.SelfDriving.SpeakerSelfDrive;
 import frc.robot.subsystems.Swerve.SwerveModule;
 import frc.robot.subsystems.Swerve.SwerveSubsystem;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -51,9 +52,10 @@ public class RobotContainer {
 	public RobotContainer() {
 		// Configure the trigger bindings
 		configureBindings();
-		// CommandScheduler.getInstance().registerSubsystem(limelightInterface);
-		// CommandScheduler.getInstance().registerSubsystem(AmpSelfDrive);
-		// CommandScheduler.getInstance().registerSubsystem(SpeakerSelfDrive);
+		
+		swerve.init(new Pose2d(1, 1, imu.yaw()));
+		swerve.initShuffleboard();
+		
 	}
 
 	/**

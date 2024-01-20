@@ -6,7 +6,12 @@ package frc.robot.Constants;
 
 import static java.lang.Math.*;
 
+import java.util.Map;
+
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -22,8 +27,18 @@ public final class Constants {
 	}
 
 	public static class SwerveConstants {
-		public static final double maxSpeed = 2.5;
+		public static final double maxSpeed = 2;
 	}
+
+	// Raunak test
+	public static class SwerveConstants2 {
+        public static final double maxSpeed = Units.feetToMeters(16.6);
+        public static final double shuffleboardMultiplier = Shuffleboard.getTab("Drive")
+        .add("Max Speed", 0.5)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
+        .getEntry().get().getDouble();
+    }
 
 	public static final double robotWidth = Units.inchesToMeters(21.73); // TODO: This must be tuned to specific robot
 	public static final double robotLength = Units.inchesToMeters(21.73); // TODO: This must be tuned to specific robot
